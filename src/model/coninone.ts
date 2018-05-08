@@ -68,6 +68,8 @@ export interface CoinoneTicker extends Document {
   omg_low: number;
   omg_open: number;
   omg_yesterday_price: number;
+
+  timestamp?: Date;
 }
 
 const CoinoneTickerSchema = new Schema({
@@ -137,7 +139,8 @@ const CoinoneTickerSchema = new Schema({
   omg_high: Number,
   omg_low: Number,
   omg_open: Number,
-  omg_yesterday_price: Number
+  omg_yesterday_price: Number,
+  timestamp : {type : Date , default: Date.now}
 });
 
 export default model<CoinoneTicker>('Coinone_Ticker', CoinoneTickerSchema);

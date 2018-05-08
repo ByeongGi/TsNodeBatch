@@ -43,10 +43,10 @@ export function tickerCollector(addr: string) {
  * @param {string} data JSON 형태의 Ticker DATA
  */
 export function coinoneTickerSave(data: string) {
+   console.log('res : ', data);
   return coninone
     .create(data)
     .then(res => {
-      // console.log('res : ', res);
       return res;
     })
     .catch(err => {
