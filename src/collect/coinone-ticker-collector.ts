@@ -9,17 +9,33 @@ import coninone from '../model/coninone';
  * @param {String} addr ws url
  */
 export function tickerCollector(addr: string) {
+
+
+
   const ws = new WebSocket(addr);
   const sub = new WebSocketSubject(ws);
+  let inter;
 
   sub.open(() => {
+
+    // ticker를 요청한다.
     sub.send('40/ticker');
     // sub.send('40/trade_eos');
+
+    // 웹소켓이 연결되고 나서 연결 유지를 위해서 꾸준히 보내 준다.
+    inter = interval(1000)
+    .subscribe(() => {
+        console.log('SEND 1초마다 한번씩');
+        sub.send('2');
+      });
   });
-  interval(1000).subscribe(() => {
-    console.log('SEND 1초마다 한번씩');
-    sub.send('2');
-  });
+
+
+
+  // tickerCollector.start();
+  // tickerCollector.subscribe();
+  // tickerCollector.end();
+
 
   return sub.pipe(
     filter((data: string) => data.indexOf('42/ticker') !== -1),
@@ -47,7 +63,7 @@ export function tickerCollector(addr: string) {
  * @param {string} data JSON 형태의 Ticker DATA
  */
 export function coinoneTickerSave(data: string) {
-  console.log('res : ', data);
+  // console.log('res : ', data);
   return coninone
     .create(data)
     .then(res => {

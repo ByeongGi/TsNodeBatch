@@ -1,9 +1,16 @@
 import dbConnection from './dbConnection';
+import { TickerCollector } from './collect/coinone-ticker-collector-OOP';
 import {
-  tickerCollector,
-  coinoneTickerSave
+  coinoneTickerSave,
+  tickerCollector
 } from './collect/coinone-ticker-collector';
-import { tradeCollector, coinoneTradeSave } from './collect/conion-trade-collector';
+
+import {
+  tradeCollector,
+  coinoneTradeSave
+} from './collect/conion-trade-collector';
+import { WebSocketOutbound } from './outbound/webSocketOutbound';
+import WebSocket from 'ws';
 
 // DB CONTENTIONS
 dbConnection
@@ -17,11 +24,31 @@ dbConnection
     );
     process.exit();
   });
+// OOP 스타일
+/*
+const tickerCollectorOOP = new TickerCollector('wss://push.coinone.co.kr/socket.io/?EIO=3&transport=websocket');
+tickerCollectorOOP
+.subscribe(coinoneTickerSave);
+setTimeout(() => {
+  console.log('2초뒤 구독 해지');
+  tickerCollectorOOP.unsubscribe();
+}, 2000);
+ */
 
-tickerCollector(
+const tickerSub = tickerCollector(
   'wss://push.coinone.co.kr/socket.io/?EIO=3&transport=websocket'
-).subscribe(coinoneTickerSave);
+);
+tickerSub.subscribe(coinoneTickerSave);
 
-tradeCollector(
-  'wss://push.coinone.co.kr/socket.io/?EIO=3&transport=websocket'
-).subscribe(coinoneTradeSave);
+const webSocketOutbound = new WebSocketOutbound(
+  'ws://localhost:8099',
+  tickerSub
+);
+webSocketOutbound.start();
+// console.log('시작' + new Date());
+
+setTimeout(() => {
+  webSocketOutbound.stop();
+  // console.log('종료' + new Date());
+}, 5000);
+// console.log(data);
