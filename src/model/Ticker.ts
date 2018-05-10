@@ -14,7 +14,7 @@ export interface CoinTicker extends Document {
   currency: string;
   result?: string;
   errorCode?: string;
-  timestamp?: number;
+  timestamp?: string;
 }
 
 export interface Ticker extends Document {
@@ -32,7 +32,7 @@ export interface Ticker extends Document {
 
   result: string;
   errorCode: string;
-  timestamp: number;
+  timestamp: string;
 }
 
 export const coinTicker = {
@@ -49,7 +49,7 @@ export const coinTicker = {
     currency: String,
     result: String,
     errorCode: String,
-    timestamp: Number
+    timestamp: String
 };
 
 export const TickerSchema = new Schema({
@@ -66,7 +66,7 @@ export const TickerSchema = new Schema({
   eos: { type: coinTicker },
   result: { type: String },
   errorCode: { type: String },
-  timestamp: { type: Date  , default : Date.now }
+  timestamp: { type: String }
 });
 
 export default model<Ticker>('Coinone_Ticker', TickerSchema);

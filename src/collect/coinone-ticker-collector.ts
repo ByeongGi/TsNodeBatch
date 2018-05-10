@@ -35,6 +35,10 @@ export function tickerCollector(addr: string) {
         throw error;
         // console.error(error);
       }
+    }),
+    map(data => {
+      data.timestamp = new Date().getTime().toString();
+      return data;
     })
   );
 }
@@ -43,7 +47,7 @@ export function tickerCollector(addr: string) {
  * @param {string} data JSON 형태의 Ticker DATA
  */
 export function coinoneTickerSave(data: string) {
-   console.log('res : ', data);
+  console.log('res : ', data);
   return coninone
     .create(data)
     .then(res => {
